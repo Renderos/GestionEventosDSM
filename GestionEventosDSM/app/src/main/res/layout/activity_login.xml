@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/login_title1"
+        android:layout_width="338dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="Comunidad El Almendro"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="37dp" />
+
+    <TextView
+        android:id="@+id/login_title2"
+        android:layout_width="338dp"
+        android:layout_height="40dp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="Eventos"
+        android:layout_marginBottom="10dp"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="37dp" />
+
+    <EditText
+        android:id="@+id/loginEmail"
+        android:layout_width="338dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="10dp"
+        android:ems="10"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress"
+        tools:layout_editor_absoluteX="36dp" />
+
+    <EditText
+        android:id="@+id/editTextTextPassword"
+        android:layout_width="338dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="10dp"
+        android:ems="10"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        tools:layout_editor_absoluteX="36dp" />
+
+    <CheckBox
+        android:id="@+id/login_remember"
+        android:layout_width="338dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:text="Recuérdame"
+        tools:layout_editor_absoluteX="36dp" />
+
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="338dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="10dp"
+        android:text="Entrar"
+        tools:layout_editor_absoluteX="37dp" />
+
+    <TextView
+        android:id="@+id/login_recovery"
+        android:layout_width="338dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="12dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:text="Olvidaste tu contraseña?"
+        android:textAlignment="textEnd"
+        tools:layout_editor_absoluteX="179dp" />
+
+    <Button
+        android:id="@+id/login_google"
+        android:layout_width="338dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="40dp"
+        android:text="Entrar con Google"
+        tools:layout_editor_absoluteX="31dp"
+        tools:layout_editor_absoluteY="590dp" />
+
+
+
+
+</LinearLayout>
