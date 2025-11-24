@@ -1,3 +1,25 @@
+Integrantes:
+<table>
+  <tr>
+    <td>Ludwin Fuentes Beltrán</td><td>FB232274</td>
+  </tr>
+  <tr>
+    <td>Rodrigo Henríquez López</td><td>HL211477</td>
+  </tr>
+  <tr>
+    <td>Douglas Mejía Novoa</td><td>MN142088</td>
+  </tr>
+  <tr>
+    <td>Moisés Prieto Torres</td><td>PT200508</td>
+  </tr>
+  <tr>
+    <td>Ronald Renderos Ramos</td><td>RR150535</td>
+  </tr>
+  <tr>
+    <td>Oscar Portillo Barahona</td><td>PB161930</td>
+  </tr>
+</table>
+
 # GestionEventosDSM  
 #Trello: 
 https://trello.com/invite/b/69213c1b48e7c6c38f8c3535/ATTIa7f55d960fcf3f566b8244afc21a6dbe932855EE/dms-gestion-de-eventos  
