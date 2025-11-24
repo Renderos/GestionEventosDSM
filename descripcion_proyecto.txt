@@ -1,0 +1,13 @@
+Proyecto de Gestión de Eventos Comunitarios
+--------------------------------------------
+
+Este archivo sirve como evidencia de que se ha trabajado en el proyecto.
+El sistema permitirá crear, editar, eliminar y visualizar eventos dentro
+de una comunidad local.
+
+Incluye:
+- Objetivo general del proyecto
+- Funcionalidades principales
+- Estructura básica de pantallas
+
+Archivo generado automáticamente para fines académicos.
