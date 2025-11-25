@@ -22,8 +22,14 @@ Integrantes:
   </tr>
 </table>
 
-#Trello: 
+## License
+
+This project is licensed under the **Creative Commons Attribution 4.0 International License (CC BY 4.0)**. See the [LICENSE](LICENSE) file for details.
+
+![CC BY 4.0](https://licensebuttons.net/l/by/4.0/88x31.png)
+
+##Trello: 
 https://trello.com/invite/b/69213c1b48e7c6c38f8c3535/ATTIa7f55d960fcf3f566b8244afc21a6dbe932855EE/dms-gestion-de-eventos  
 
-#Figma: 
+##Figma: 
 https://www.figma.com/design/KDAgUyMgoSETd9Lw5BbJK1/Gestion-de-eventos----DSM-2025?node-id=0-1&t=wqNA6C9WCqVZkwC4-1
