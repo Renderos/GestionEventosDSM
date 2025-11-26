@@ -1,6 +1,5 @@
-package com.example.gestioeventosdsm
+package com.example.gestioneventosdsm.view
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +9,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.gestioneventosdsm.MainActivity
+import com.example.gestioneventosdsm.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -71,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
 
     // --- ActivityResultLauncher for Google Sign-In ---
     private val googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 // Google Sign In was successful, authenticate with Firebase
@@ -94,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
                     // Sign in success, navigate to main activity
                     Log.d(TAG, "signInWithCredential-Google:success")
                     Toast.makeText(this, "Google Sign-In Successful.", Toast.LENGTH_SHORT).show()
-                    goToMainActivity()
+                    goToEventList()
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential-Google:failure", task.exception)
@@ -116,7 +116,10 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithEmail:success")
                     Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
-                    goToMainActivity()
+                    // Navigate to MainActivity
+                    //goToMainActivity()
+                    // Navigate to EventList
+                    goToEventList()
                 } else {
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
                     showAlertDialog("Authentication Failed", "Error: ${task.exception?.message}")
@@ -126,6 +129,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish() // Finish LoginActivity so the user can't go back
+    }
+
+    private fun goToEventList(){
+        val intent = Intent(this, TaskListActivity::class.java)
         startActivity(intent)
         finish() // Finish LoginActivity so the user can't go back
     }

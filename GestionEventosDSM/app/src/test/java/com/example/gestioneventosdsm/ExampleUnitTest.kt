@@ -1,4 +1,4 @@
-package com.example.gestioeventosdsm
+package com.example.gestioneventosdsm
 
 import org.junit.Test
 

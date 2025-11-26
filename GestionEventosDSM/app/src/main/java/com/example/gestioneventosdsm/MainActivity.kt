@@ -1,4 +1,4 @@
-package com.example.gestioeventosdsm
+package com.example.gestioneventosdsm
 
 import android.os.Bundle
 import android.view.Menu
@@ -8,7 +8,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.gestioeventosdsm.databinding.ActivityMainBinding
+import com.example.gestioneventosdsm.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {

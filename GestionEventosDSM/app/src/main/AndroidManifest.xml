@@ -11,20 +11,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GestioEventosDSM">
+
         <activity
-            android:name=".LoginActivity"
+            android:name=".view.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.GestioEventosDSM">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
-            android:exported="true"
+
+        <activity
+            android:name=".view.TaskListActivity"
+            android:exported="false"
+            android:label="Event List"
             android:theme="@style/Theme.GestioEventosDSM">
         </activity>
+
     </application>
 
 </manifest>
