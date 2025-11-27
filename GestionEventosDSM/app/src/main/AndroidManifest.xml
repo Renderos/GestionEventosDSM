@@ -29,6 +29,12 @@
             android:theme="@style/Theme.GestioEventosDSM">
         </activity>
 
+        <activity
+            android:name=".view.TaskDetailActivity"
+            android:exported="false"
+            android:label="Detalles del Evento"
+            android:theme="@style/Theme.GestioEventosDSM">
+        </activity>
     </application>
 
 </manifest>

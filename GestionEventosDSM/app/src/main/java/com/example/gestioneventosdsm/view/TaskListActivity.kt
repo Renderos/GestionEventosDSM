@@ -2,6 +2,7 @@ package com.example.gestioneventosdsm.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -61,9 +62,24 @@ class TaskListActivity : AppCompatActivity() {
         eventAdapter = EventAdapter(
             events = emptyList(),
             onItemClick = { task ->
-                // Handle short click
-                Toast.makeText(this, "Task: ${task.title}", Toast.LENGTH_SHORT).show()
+                // Logging
+                    Log.d("TaskListActivity", "Item clicked. Preparing to open details for task:")
+                    Log.d("TaskListActivity", "ID: ${task.id} (Type: ${task.id::class.simpleName})")
+                    Log.d("TaskListActivity", "Title: ${task.title}")
+                    Log.d("TaskListActivity", "Description: ${task.description}")
+                    Log.d("TaskListActivity", "Due Date: ${task.dueDate}")
+                    Log.d("TaskListActivity", "Priority: ${task.priority}")
                 // You can navigate to a detail screen here if you want
+                val intent = Intent(this, TaskDetailActivity::class.java).apply {
+                    // 2. Pass all the task data to the detail activity.
+                    putExtra("taskId", task.id)
+                    putExtra("title", task.title)
+                    putExtra("description", task.description)
+                    putExtra("dueDate", task.dueDate)
+                    putExtra("priority", task.priority)
+                }
+                // 3. Start the activity.
+                startActivity(intent)
             },
             onItemLongClick = { task, view ->
                 // Handle long click
