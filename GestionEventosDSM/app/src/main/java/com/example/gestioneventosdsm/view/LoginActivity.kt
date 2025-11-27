@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.gestioneventosdsm.MainActivity
 import com.example.gestioneventosdsm.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -37,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
 
         // If the user is already logged in, go straight to MainActivity
         if (auth.currentUser != null) {
-            goToMainActivity()
+            goToEventList()
             return // Stop further execution of onCreate
         }
 
@@ -127,11 +126,11 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun goToMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish() // Finish LoginActivity so the user can't go back
-    }
+//    private fun goToMainActivity() {
+//        val intent = Intent(this, MainActivity::class.java)
+//        startActivity(intent)
+//        finish() // Finish LoginActivity so the user can't go back
+//    }
 
     private fun goToEventList(){
         val intent = Intent(this, TaskListActivity::class.java)

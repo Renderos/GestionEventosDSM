@@ -1,12 +1,14 @@
 package com.example.gestioneventosdsm.view
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +21,13 @@ import com.example.gestioneventosdsm.model.TaskRepository
 import com.example.gestioneventosdsm.network.ApiService
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import android.widget.Spinner
+import android.widget.ArrayAdapter
+import android.app.DatePickerDialog
+import java.util.Calendar
+import android.app.TimePickerDialog
 
 class TaskListActivity : AppCompatActivity() {
 
@@ -32,6 +41,7 @@ class TaskListActivity : AppCompatActivity() {
     private val taskController = TaskController(TaskRepository(ApiService.create()))
     private var selectedTask: Task? = null // To store the long-clicked task
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_list)
@@ -100,6 +110,7 @@ class TaskListActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.task_item_menu, menu)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onContextItemSelected(item: MenuItem): Boolean {
         // Use the 'selectedTask' variable we stored during the long click
         val task = selectedTask ?: return false // If no task is selected, do nothing
@@ -126,21 +137,44 @@ class TaskListActivity : AppCompatActivity() {
 
     // --- Data Handling Methods (Copied from your original file, no changes needed) ---
 
+// In TaskListActivity.kt
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun loadTasks() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val tasks = taskController.getTasks()
+                // 1. Fetch the original list of tasks.
+                val allTasks = taskController.getTasks()
+
+                // 2. Get today's date as a string in "YYYY-MM-DD" format.
+                val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
+
+                // 3. Filter the list to keep only tasks with a due date on or after today.
+                //    We can compare the date strings directly.
+                val futureTasks = allTasks.filter { it.dueDate >= today }
+
+                // 4. Sort the filtered list of future tasks by their due date.
+                val sortedFutureTasks = futureTasks.sortedBy { it.dueDate }
+
+                // 5. Switch to the main thread to update the UI.
                 withContext(Dispatchers.Main) {
-                    eventAdapter.updateData(tasks) // Update the new adapter
+                    // 6. Pass the final sorted and filtered list to the adapter.
+                    eventAdapter.updateData(sortedFutureTasks)
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    // It's helpful to log the error for debugging.
+                    Log.e("TaskListActivity", "Error loading or filtering tasks", e)
                     Toast.makeText(this@TaskListActivity, "Error loading tasks: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun deleteTask(task: Task) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -157,6 +191,7 @@ class TaskListActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun addTask(task: Task) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -174,6 +209,7 @@ class TaskListActivity : AppCompatActivity() {
     }
 
     // --- Dialogs (Copied from your original file, no changes needed) ---
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun showDeleteConfirmationDialog(task: Task) {
         AlertDialog.Builder(this)
             .setMessage("¿Estás seguro de que quieres eliminar esta tarea?")
@@ -184,34 +220,105 @@ class TaskListActivity : AppCompatActivity() {
             .show()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun showAddTaskDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Agregar Nueva Tarea")
+        builder.setTitle("Agregar Nuevo Evento")
 
         val inputLayout = LinearLayout(this)
         inputLayout.orientation = LinearLayout.VERTICAL
 
-        val titleEditText = EditText(this).apply { hint = "Título" }
+        inputLayout.setPadding(50, 40, 50, 24)
+
+
+        val titleEditText = EditText(this).apply { hint = "Título del Evento" }
         inputLayout.addView(titleEditText)
 
         val descriptionEditText = EditText(this).apply { hint = "Descripción" }
         inputLayout.addView(descriptionEditText)
 
-        val fechaEditText = EditText(this).apply { hint = "Fecha Cierre" }
+        val imageUrlEditText = EditText(this).apply { hint = "URL de la Imagen (Opcional)" }
+        inputLayout.addView(imageUrlEditText)
+
+        val fechaEditText = EditText(this).apply {
+            hint = "Fecha"
+            isFocusable = false
+            isClickable = true
+        }
+
+        fechaEditText.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(
+                this,
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    val selectedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+                    fechaEditText.setText(selectedDate)
+                },
+                year, month, day
+            )
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+            datePickerDialog.show()
+        }
         inputLayout.addView(fechaEditText)
 
-        val prioridadEditText = EditText(this).apply { hint = "Prioridad" }
+        val eventHourEditText = EditText(this).apply {
+            hint = "Hora (HH:mm)"
+            isFocusable = false
+            isClickable = true
+        }
+        eventHourEditText.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+
+            val timePickerDialog = TimePickerDialog(
+                this,
+                { _, selectedHour, selectedMinute ->
+                    val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+                    eventHourEditText.setText(formattedTime)
+                },
+                hour,
+                minute,
+                true // 24-hour format
+            )
+            timePickerDialog.show()
+        }
+        inputLayout.addView(eventHourEditText)
+
+//        val prioridadEditText = EditText(this).apply { hint = "Prioridad" }
+//        inputLayout.addView(prioridadEditText)
+        val priorityOptions = arrayOf("publico", "privado")
+        val priorityAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            priorityOptions
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+
+        val prioridadEditText = Spinner(this).apply {
+            adapter = priorityAdapter
+            (layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin = 8
+        }
+
         inputLayout.addView(prioridadEditText)
 
         builder.setView(inputLayout)
 
         builder.setPositiveButton("Guardar") { dialog, _ ->
+            val selectedPriority = prioridadEditText.selectedItem.toString()
             val task = Task(
                 id = 0, // Will be assigned by the server
                 title = titleEditText.text.toString(),
                 description = descriptionEditText.text.toString(),
                 dueDate = fechaEditText.text.toString(),
-                priority = prioridadEditText.text.toString()
+                eventHour = eventHourEditText.text.toString(),
+                priority = selectedPriority,
+                imageUrl = imageUrlEditText.text.toString()
             )
             addTask(task)
             dialog.dismiss()

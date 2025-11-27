@@ -30,8 +30,8 @@ class TaskListAdapter(context: Context, taskList: List<Task>) :
             //holder.idTextView = convertView.findViewById(R.id.idTextView)
             holder.titleTextView = convertView.findViewById(R.id.titleTextView)
             holder.descriptionTextView = convertView.findViewById(R.id.descriptionTextView)
-            holder.dueDateTextView = convertView.findViewById(R.id.dueDateTextView)
-            holder.priorityTextView = convertView.findViewById(R.id.priorityTextView)
+            holder.dueDateTextView = convertView.findViewById(R.id.dueDateEditText)
+            holder.priorityTextView = convertView.findViewById(R.id.prioritySpinner)
             convertView.tag = holder
         } else {
             holder = convertView.tag as ViewHolder
