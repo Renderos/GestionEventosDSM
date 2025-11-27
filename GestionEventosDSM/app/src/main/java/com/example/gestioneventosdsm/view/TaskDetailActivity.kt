@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat
 import android.app.TimePickerDialog
 import java.text.SimpleDateFormat
 import java.util.Locale
+import com.google.firebase.auth.FirebaseAuth
 
 class TaskDetailActivity : AppCompatActivity() {
 
@@ -48,6 +49,9 @@ class TaskDetailActivity : AppCompatActivity() {
     private lateinit var eventHourEditText: EditText
     private lateinit var prioritySpinner: Spinner
     private lateinit var priorityAdapter: ArrayAdapter<String>
+
+    private lateinit var confirmAttendanceButton: Button
+    private lateinit var auth: FirebaseAuth
 
     private val TAG = "TaskDetailActivity"
 
@@ -85,6 +89,7 @@ class TaskDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_event_detail)
 
         supportActionBar?.title = "Detalles del Evento"
+        auth = FirebaseAuth.getInstance()
 
         try {
             toolbar = findViewById(R.id.toolbarDetail)
@@ -95,10 +100,14 @@ class TaskDetailActivity : AppCompatActivity() {
             dueDateEditText = findViewById(R.id.dueDateEditText)
             eventHourEditText = findViewById(R.id.eventHourEditText)
             prioritySpinner = findViewById(R.id.prioritySpinner)
+            confirmAttendanceButton = findViewById(R.id.confirmAttendanceButton)
             val saveButton = findViewById<Button>(R.id.saveButton)
 
             selectImageButton.setOnClickListener {
                 checkPermissionAndPickImage()
+            }
+            confirmAttendanceButton.setOnClickListener {
+                confirmAttendanceAndSendEmail()
             }
 
             setSupportActionBar(toolbar)
@@ -292,6 +301,63 @@ class TaskDetailActivity : AppCompatActivity() {
                 // Directly ask for the permission.
                 requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
             }
+        }
+    }
+    private fun confirmAttendanceAndSendEmail() {
+        val user = auth.currentUser
+        val event = currentTask
+
+        // --- 2. Validate that we have a user and an event ---
+        if (user == null) {
+            Toast.makeText(this, "Error: No se ha encontrado un usuario.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (event == null) {
+            Toast.makeText(this, "Error: No se han podido cargar los detalles del evento.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // --- 3. Get the user's email ---
+        val userEmail = user.email
+        if (userEmail.isNullOrEmpty()) {
+            Toast.makeText(this, "Error: No se ha encontrado el email del usuario.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // --- 4. Simulate saving the attendance and show feedback ---
+        // In a real app, you would make a network call here to your backend.
+        // For example: taskController.confirmAttendance(event.id, user.uid)
+        Toast.makeText(this, "¡Gracias por confirmar tu asistencia!", Toast.LENGTH_LONG).show()
+
+        // --- 5. Create and launch the email Intent ---
+        val emailSubject = "Confirmación de Asistencia: ${event.title}"
+        val emailBody = """
+            Hola ${user.displayName ?: ""},
+
+            Has confirmado tu asistencia para el siguiente evento:
+
+            Evento: ${event.title}
+            Fecha: ${event.dueDate}
+            Hora: ${event.eventHour ?: "No especificada"}
+
+            ¡Te esperamos!
+
+            Atentamente,
+            El equipo de GestioEventosDSM
+        """.trimIndent()
+
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:") // Only email apps should handle this
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(userEmail))
+            putExtra(Intent.EXTRA_SUBJECT, emailSubject)
+            putExtra(Intent.EXTRA_TEXT, emailBody)
+        }
+
+        // Use a chooser to let the user pick their email app
+        try {
+            startActivity(Intent.createChooser(intent, "Enviar email de confirmación..."))
+        } catch (ex: android.content.ActivityNotFoundException) {
+            Toast.makeText(this, "No se encontró ninguna aplicación de email.", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -160,11 +160,22 @@
                 android:text="Seleccionar Imagen" />
 
             <Button
+                android:id="@+id/confirmAttendanceButton"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:text="¡Asistiré!" />
+
+            <Button
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:text="@string/save_button_label" />
