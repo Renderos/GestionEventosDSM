@@ -77,18 +77,29 @@
         android:id="@+id/loginRecovery"
         android:layout_width="338dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="12dp"
         android:focusable="true"
         android:clickable="true"
         android:text="Olvidaste tu contraseña?"
         android:textAlignment="textEnd"
         tools:layout_editor_absoluteX="179dp" />
 
+    <TextView
+        android:id="@+id/registerTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="¿No tienes cuenta? Regístrate aquí"
+        android:textColor="?attr/colorPrimary"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground"
+        android:padding="8dp"/>
+
     <Button
         android:id="@+id/loginGoogle"
         android:layout_width="338dp"
         android:layout_height="48dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:text="Entrar con Google"
         tools:layout_editor_absoluteX="31dp"
         tools:layout_editor_absoluteY="590dp" />
@@ -99,6 +110,8 @@
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp" />
+
+
 
 </LinearLayout>
 

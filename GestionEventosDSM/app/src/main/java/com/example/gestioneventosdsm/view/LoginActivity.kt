@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -103,6 +104,11 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(baseContext, "Error al iniciar sesión con Facebook.", Toast.LENGTH_SHORT).show()
             }
         })
+        val registerTextView = findViewById<TextView>(R.id.registerTextView)
+        registerTextView.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

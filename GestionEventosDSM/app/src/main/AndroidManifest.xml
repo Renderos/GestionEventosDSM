@@ -60,6 +60,11 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".view.RegisterActivity"
+            android:exported="false"
+            android:label="Crear Cuenta">
+        </activity>
 
     </application>
 

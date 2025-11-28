@@ -34,6 +34,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.facebook.login.LoginManager // Import para cerrar sesión de Facebook
 import com.google.android.gms.auth.api.signin.GoogleSignIn // Import para cerrar sesión de Google
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.core.view.GravityCompat
+import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.ActionBarDrawerToggle
+import android.widget.TextView
 
 class TaskListActivity : AppCompatActivity() {
 
@@ -43,6 +48,14 @@ class TaskListActivity : AppCompatActivity() {
     private lateinit var addTaskButton: FloatingActionButton
     private lateinit var toolbar: Toolbar
     private lateinit var auth: FirebaseAuth
+
+    private enum class EventFilter{
+        FUTUROS, PASADOS, TODOS
+    }
+    private var currentFilter = EventFilter.FUTUROS
+
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
 
 
     // --- Controller & Data ---
@@ -58,22 +71,63 @@ class TaskListActivity : AppCompatActivity() {
 
         // --- Initialize Views ---
         toolbar = findViewById(R.id.toolbar)
+        drawerLayout = findViewById(R.id.drawer_layout)
+        navigationView = findViewById(R.id.nav_view)
         addTaskButton = findViewById(R.id.addTaskButton)
         eventRecyclerView = findViewById(R.id.eventRecyclerView) // FIX: Correct ID
 
         // --- Set Toolbar ---
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "Eventos"
+        supportActionBar?.title = "Eventos Próximos"
 
-        // --- Setup RecyclerView ---
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open, // (Necesitas añadir estos strings en strings.xml)
+            R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_eventos_futuros -> {
+                    currentFilter = EventFilter.FUTUROS
+                    supportActionBar?.title = "Eventos Futuros"
+                    loadTasks()
+                }
+                R.id.nav_eventos_pasados -> {
+                    currentFilter = EventFilter.PASADOS
+                    supportActionBar?.title = "Eventos Pasados"
+                    loadTasks()
+                }
+                R.id.nav_todos_los_eventos -> {
+                    currentFilter = EventFilter.TODOS
+                    supportActionBar?.title = "Todos los Eventos"
+                    loadTasks()
+                }
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
+
+        val headerView = navigationView.getHeaderView(0)
+        val userEmailTextView = headerView.findViewById<TextView>(R.id.nav_header_user_email)
+        userEmailTextView.text = auth.currentUser?.email ?: "No identificado"
+
+        // Marcar el primer ítem como seleccionado por defecto
+        navigationView.setCheckedItem(R.id.nav_eventos_futuros)
+
+        // --- Setup RecyclerView y Listeners ---
         setupRecyclerView()
+        loadTasks() // Carga inicial
+        addTaskButton.setOnClickListener { showAddTaskDialog() }
+    }
 
-        // --- Load Initial Data ---
-        loadTasks()
-
-        // --- Setup Listeners ---
-        addTaskButton.setOnClickListener {
-            showAddTaskDialog()
+    override fun onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
         }
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -202,12 +256,14 @@ class TaskListActivity : AppCompatActivity() {
                 // 2. Get today's date as a string in "YYYY-MM-DD" format.
                 val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
 
-                // 3. Filter the list to keep only tasks with a due date on or after today.
-                //    We can compare the date strings directly.
-                val futureTasks = allTasks.filter { it.dueDate >= today }
+                val filteredTasks = when (currentFilter) {
+                    EventFilter.FUTUROS -> allTasks.filter { it.dueDate >= today }
+                    EventFilter.PASADOS -> allTasks.filter { it.dueDate < today }
+                    EventFilter.TODOS -> allTasks
+                }
 
                 // 4. Sort the filtered list of future tasks by their due date.
-                val sortedFutureTasks = futureTasks.sortedBy { it.dueDate }
+                val sortedFutureTasks = filteredTasks.sortedBy { it.dueDate }
 
                 // 5. Switch to the main thread to update the UI.
                 withContext(Dispatchers.Main) {

@@ -72,5 +72,6 @@ dependencies {
     implementation("com.sun.mail:android-mail:1.6.7")
     implementation("com.sun.mail:android-activation:1.6.7")
     implementation("com.facebook.android:facebook-login:17.0.0") // O la versión más reciente
+    implementation("com.google.android.material:material:1.13.0")
 
 }
