@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.gestioeventosdsm"
+    namespace = "com.example.gestioneventosdsm"
     compileSdk {
         version = release(36)
     }
@@ -33,11 +33,19 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
     buildFeatures {
         viewBinding = true
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/NOTICE.md"
+            excludes += "META-INF/LICENSE.md"
+        }
     }
 }
 
@@ -48,6 +56,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.core.i18n)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -55,4 +64,13 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.sun.mail:android-mail:1.6.7")
+    implementation("com.sun.mail:android-activation:1.6.7")
+    implementation("com.facebook.android:facebook-login:17.0.0") // O la versión más reciente
+
 }
