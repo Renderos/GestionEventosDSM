@@ -8,6 +8,39 @@
     <string name="previous">Previous</string>
     <string name="CCLicense"><![CDATA[
     GestionEventosDSM  © 2025 by Ronald Renderos is licensed under CC BY-NC-ND 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-nd/4.0/]]></string>
+
+
+    <string name="task_list_title">Lista de Eventos</string>
+    <string name="task_detail_title">Detalles del Evento</string>
+
+    <!-- Botones -->
+    <string name="save_button_label">Guardar</string>
+    <string name="delete_button_label">Eliminar</string>
+
+    <!-- Hints -->
+    <string name="title_hint">Título</string>
+    <string name="description_hint">Descripción</string>
+
+    <!-- Descripciones -->
+    <string name="add_task_button_description">Agregar nuevo Evento</string>
+    <string name="due_date_label">Fecha:</string>
+    <string name="priority_label">Tipo de evento:</string>
+
+    <!-- Mensajes -->
+    <string name="task_updated_message">Evento actualizada exitosamente</string>
+    <string name="task_deleted_message">Evento eliminada exitosamente</string>
+    <string name="invalid_task_id_error">Error con el evento</string>
+    <string name="title_activity_task_detail">Detalle del Evento</string>
+    <string name="title_label">Titulo :</string>
+    <string name="description_label">Descripcion :</string>
+
+    <!-- Facebook -->
+    <string name="facebook_app_id">1234</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">56789</string>
+
+
+
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -44,28 +77,4 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-
-    <string name="task_list_title">Lista de Eventos</string>
-    <string name="task_detail_title">Detalles del Evento</string>
-
-    <!-- Botones -->
-    <string name="save_button_label">Guardar</string>
-    <string name="delete_button_label">Eliminar</string>
-
-    <!-- Hints -->
-    <string name="title_hint">Título</string>
-    <string name="description_hint">Descripción</string>
-
-    <!-- Descripciones -->
-    <string name="add_task_button_description">Agregar nuevo Evento</string>
-    <string name="due_date_label">Fecha:</string>
-    <string name="priority_label">Tipo de evento:</string>
-
-    <!-- Mensajes -->
-    <string name="task_updated_message">Evento actualizada exitosamente</string>
-    <string name="task_deleted_message">Evento eliminada exitosamente</string>
-    <string name="invalid_task_id_error">Error con el evento</string>
-    <string name="title_activity_task_detail">Detalle del Evento</string>
-    <string name="title_label">Titulo :</string>
-    <string name="description_label">Descripcion :</string>
 </resources>

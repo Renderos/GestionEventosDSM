@@ -16,6 +16,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
+import com.google.firebase.auth.FacebookAuthProvider
 
 class LoginActivity : AppCompatActivity() {
 
@@ -28,11 +38,17 @@ class LoginActivity : AppCompatActivity() {
     // --- Google Sign-In ---
     private lateinit var googleSignInClient: GoogleSignInClient
 
+    // ---Facebook Sign In---
+    private lateinit var callbackManager: CallbackManager
+    private lateinit var loginFacebookButton: LoginButton
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         auth = FirebaseAuth.getInstance()
+
 
         // If the user is already logged in, go straight to MainActivity
         if (auth.currentUser != null) {
@@ -66,6 +82,50 @@ class LoginActivity : AppCompatActivity() {
             val signInIntent = googleSignInClient.signInIntent
             googleSignInLauncher.launch(signInIntent)
         }
+        callbackManager = CallbackManager.Factory.create()
+
+        // --- 3. Configura el botón de Facebook ---
+        loginFacebookButton = findViewById(R.id.loginFacebookButton)
+
+        loginFacebookButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(loginResult: LoginResult) {
+                Log.d(TAG, "Facebook onSuccess: ${loginResult.accessToken.token}")
+                handleFacebookAccessToken(loginResult.accessToken)
+            }
+
+            override fun onCancel() {
+                Log.d(TAG, "Facebook onCancel.")
+                Toast.makeText(baseContext, "Inicio de sesión con Facebook cancelado.", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onError(error: FacebookException) {
+                Log.e(TAG, "Facebook onError.", error)
+                Toast.makeText(baseContext, "Error al iniciar sesión con Facebook.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        callbackManager.onActivityResult(requestCode, resultCode, data) // Pasa el resultado al SDK de Facebook
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleFacebookAccessToken(token: AccessToken) {
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI
+                    Log.d(TAG, "signInWithCredential-Facebook:success")
+                    val user = auth.currentUser
+                    Toast.makeText(this, "Inicio de sesión con Facebook exitoso.", Toast.LENGTH_SHORT).show()
+                    goToEventList()
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential-Facebook:failure", task.exception)
+                    Toast.makeText(baseContext, "Fallo en la autenticación con Firebase.", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     // --- ActivityResultLauncher for Google Sign-In ---

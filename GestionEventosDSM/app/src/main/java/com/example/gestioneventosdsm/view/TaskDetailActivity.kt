@@ -12,6 +12,7 @@ import com.example.gestioneventosdsm.controller.TaskController
 import com.example.gestioneventosdsm.model.Task
 import com.example.gestioneventosdsm.model.TaskRepository
 import com.example.gestioneventosdsm.network.ApiService
+import com.example.gestioneventosdsm.util.sendMail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,6 +34,11 @@ import android.app.TimePickerDialog
 import java.text.SimpleDateFormat
 import java.util.Locale
 import com.google.firebase.auth.FirebaseAuth
+import android.view.Menu
+import android.view.MenuItem
+import com.facebook.login.LoginManager // Import para cerrar sesión de Facebook
+import com.google.android.gms.auth.api.signin.GoogleSignIn // Import para cerrar sesión de Google
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class TaskDetailActivity : AppCompatActivity() {
 
@@ -53,6 +59,7 @@ class TaskDetailActivity : AppCompatActivity() {
     private lateinit var confirmAttendanceButton: Button
     private lateinit var auth: FirebaseAuth
 
+
     private val TAG = "TaskDetailActivity"
 
     // --- 1. Launcher for Getting Content (the image picker) ---
@@ -60,6 +67,13 @@ class TaskDetailActivity : AppCompatActivity() {
         uri?.let {
             // The user has successfully selected an image
             Log.d(TAG, "Image selected: $it")
+
+            try {
+                contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                Log.d(TAG, "Permiso persistente para la URI obtenido con éxito.")
+            } catch (e: SecurityException) {
+                Log.e(TAG, "Fallo al obtener permiso persistente para la URI.", e)
+            }
             selectedImageUri = it
             // Display the selected image immediately in the ImageView
             Glide.with(this)
@@ -147,6 +161,52 @@ class TaskDetailActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Usa el nuevo archivo de menú que creamos
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                // Llama a la función para cerrar sesión
+                signOut()
+                true // Indica que hemos manejado el clic
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun signOut() {
+        // Muestra un diálogo de confirmación
+        AlertDialog.Builder(this)
+            .setTitle("Cerrar Sesión")
+            .setMessage("¿Estás seguro de que quieres cerrar sesión?")
+            .setPositiveButton("Sí") { _, _ ->
+                // Cierra sesión en Firebase
+                auth.signOut()
+
+                // Cierra sesión en Facebook
+                LoginManager.getInstance().logOut()
+
+                // Cierra sesión en Google
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+                val googleSignInClient = GoogleSignIn.getClient(this, gso)
+                googleSignInClient.signOut().addOnCompleteListener {
+                    // Una vez completado, redirige a LoginActivity
+                    val intent = Intent(this, LoginActivity::class.java)
+                    // Limpia el historial de actividades para que el usuario no pueda volver atrás
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed() // Standard way to handle back navigation
         return true
@@ -346,12 +406,16 @@ class TaskDetailActivity : AppCompatActivity() {
             El equipo de GestioEventosDSM
         """.trimIndent()
 
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:") // Only email apps should handle this
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(userEmail))
-            putExtra(Intent.EXTRA_SUBJECT, emailSubject)
-            putExtra(Intent.EXTRA_TEXT, emailBody)
-        }
+//        val intent = Intent(Intent.ACTION_SENDTO).apply {
+//            data = Uri.parse("mailto:") // Only email apps should handle this
+//            putExtra(Intent.EXTRA_EMAIL, arrayOf(userEmail))
+//            putExtra(Intent.EXTRA_SUBJECT, emailSubject)
+//            putExtra(Intent.EXTRA_TEXT, emailBody)
+//        }
+
+        // Not secure for demonstration only
+            sendMail().enviarEmail(userEmail, emailSubject, emailBody)
+
 
         // Use a chooser to let the user pick their email app
         try {

@@ -28,6 +28,12 @@ import android.widget.ArrayAdapter
 import android.app.DatePickerDialog
 import java.util.Calendar
 import android.app.TimePickerDialog
+import android.view.Menu
+import android.view.MenuItem
+import com.google.firebase.auth.FirebaseAuth
+import com.facebook.login.LoginManager // Import para cerrar sesión de Facebook
+import com.google.android.gms.auth.api.signin.GoogleSignIn // Import para cerrar sesión de Google
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class TaskListActivity : AppCompatActivity() {
 
@@ -36,6 +42,8 @@ class TaskListActivity : AppCompatActivity() {
     private lateinit var eventAdapter: EventAdapter
     private lateinit var addTaskButton: FloatingActionButton
     private lateinit var toolbar: Toolbar
+    private lateinit var auth: FirebaseAuth
+
 
     // --- Controller & Data ---
     private val taskController = TaskController(TaskRepository(ApiService.create()))
@@ -45,6 +53,8 @@ class TaskListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_list)
+
+        auth = FirebaseAuth.getInstance()
 
         // --- Initialize Views ---
         toolbar = findViewById(R.id.toolbar)
@@ -66,7 +76,49 @@ class TaskListActivity : AppCompatActivity() {
             showAddTaskDialog()
         }
     }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Usa el nuevo archivo de menú que creamos
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                // Llama a la función para cerrar sesión
+                signOut()
+                true // Indica que hemos manejado el clic
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+    private fun signOut() {
+        // Muestra un diálogo de confirmación
+        AlertDialog.Builder(this)
+            .setTitle("Cerrar Sesión")
+            .setMessage("¿Estás seguro de que quieres cerrar sesión?")
+            .setPositiveButton("Sí") { _, _ ->
+                // Cierra sesión en Firebase
+                auth.signOut()
+
+                // Cierra sesión en Facebook
+                LoginManager.getInstance().logOut()
+
+                // Cierra sesión en Google
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+                val googleSignInClient = GoogleSignIn.getClient(this, gso)
+                googleSignInClient.signOut().addOnCompleteListener {
+                    // Una vez completado, redirige a LoginActivity
+                    val intent = Intent(this, LoginActivity::class.java)
+                    // Limpia el historial de actividades para que el usuario no pueda volver atrás
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
     private fun setupRecyclerView() {
         // Initialize the adapter with an empty list and click handlers
         eventAdapter = EventAdapter(
